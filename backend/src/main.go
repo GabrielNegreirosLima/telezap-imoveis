@@ -7,11 +7,51 @@ import (
 	"gorm.io/gorm"
 )
 
+// TODO: FK
 type Immobile struct {
-	ID 			int
-	Price 		uint
+	ID			int
+	Price		uint
 	QtdBedrooms	int
+	HaveCloset	bool `gorm:"not null"`
+	Area		float32 `gorm:"not null"`
+	QtdCarspaces int
+	QtdRooms	int
+	QtdSuites	int
+	Summary		string
 	gorm.Model
+}
+
+// TODO: FK
+type House struct {
+	ID			int
+	QtdBedroom	int
+	QtdSuite	int
+	QtdRoom		int
+	QtdCarspaces int
+	Area		float32 `gorm:"not null"`
+	HaveCloset	bool `gorm:"not null"`
+	Summary string
+	gorm.Model
+}
+
+type Apartment struct {
+	ID				int
+	QtdDinerRooms	int
+	Floor			int
+	PriceCondominium float32
+	HasDoorman		bool
+	gorm.Model
+}
+
+type Address struct {
+	ID		int
+	Street	string `gorm:"not null"`
+	Number	int `gorm:"not null"`
+}
+
+type Neighborhood {
+	ID		int
+	name	string `gorm:"not null"`
 }
 
 func main() {
