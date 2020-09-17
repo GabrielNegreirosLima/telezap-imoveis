@@ -8,9 +8,10 @@ import (
 )
 
 type Immobile struct {
+	ID 			int
+	Price 		uint
+	QtdBedrooms	int
 	gorm.Model
-	ID int
-	Price uint
 }
 
 func main() {
@@ -25,6 +26,6 @@ func main() {
 	db.AutoMigrate(&Immobile{})
 
 	// Create
-	db.Create(&Immobile{ID: 100, Price: 123})
+	db.Create(&Immobile{ID: 100})
 	fmt.Println("Fim!")
 }

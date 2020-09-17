@@ -9,6 +9,6 @@ require (
 	github.com/stretchr/objx v0.2.0 // indirect
 	golang.org/x/net v0.0.0-20190813141303-74dc4d7220e7 // indirect
 	golang.org/x/tools v0.0.0-20191029190741-b9c20aec41a5 // indirect
-	gorm.io/driver/postgres v1.0.0 // indirect
-	gorm.io/gorm v1.20.0 // indirect
+	gorm.io/driver/postgres v1.0.0
+	gorm.io/gorm v1.20.0
 )
