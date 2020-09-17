@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-
+	"GabrielNegreirosLima/telezap-imoveis/infra/env"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -34,6 +34,7 @@ type House struct {
 	gorm.Model
 }
 
+// TODO: FK
 type Apartment struct {
 	ID				int
 	QtdDinerRooms	int
@@ -43,13 +44,15 @@ type Apartment struct {
 	gorm.Model
 }
 
+// TODO: FK
 type Address struct {
 	ID		int
 	Street	string `gorm:"not null"`
 	Number	int `gorm:"not null"`
 }
 
-type Neighborhood {
+// TODO: FK
+type Neighborhood struct {
 	ID		int
 	name	string `gorm:"not null"`
 }
@@ -61,6 +64,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	fmt.Println(env.MustGetInt("dale"))
 
 	// Migrate the schema
 	db.AutoMigrate(&Immobile{})
