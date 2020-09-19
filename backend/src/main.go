@@ -7,7 +7,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// TODO: FK
 type Immobile struct {
 	ID			int
 	Price		uint
@@ -18,10 +17,10 @@ type Immobile struct {
 	QtdRooms	int
 	QtdSuites	int
 	Summary		string
+	Address
 	gorm.Model
 }
 
-// TODO: FK
 type House struct {
 	ID			int
 	QtdBedroom	int
@@ -34,7 +33,6 @@ type House struct {
 	gorm.Model
 }
 
-// TODO: FK
 type Apartment struct {
 	ID				int
 	QtdDinerRooms	int
@@ -44,18 +42,20 @@ type Apartment struct {
 	gorm.Model
 }
 
-// TODO: FK
-type Address struct {
-	ID		int
-	Street	string `gorm:"not null"`
-	Number	int `gorm:"not null"`
-}
 
-// TODO: FK
 type Neighborhood struct {
 	ID		int
 	name	string `gorm:"not null"`
 }
+
+type Address struct {
+	ID		int
+	Street	string `gorm:"not null"`
+	Number	int `gorm:"not null"`
+	Neighborhood
+}
+
+
 
 func main() {
 
