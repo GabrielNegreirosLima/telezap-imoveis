@@ -1,14 +1,13 @@
 package main
 
 import (
-	"fmt"
 	"GabrielNegreirosLima/telezap-imoveis/infra/env"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 type Immobile struct {
-	ID			int
+	gorm.Model
 	Price		uint
 	QtdBedrooms	int
 	HaveCloset	bool `gorm:"not null"`
@@ -18,59 +17,80 @@ type Immobile struct {
 	QtdSuites	int
 	Summary		string
 	Address
-	gorm.Model
 }
 
 type House struct {
-	ID			int
-	QtdBedroom	int
-	QtdSuite	int
-	QtdRoom		int
-	QtdCarspaces int
-	Area		float32 `gorm:"not null"`
-	HaveCloset	bool `gorm:"not null"`
-	Summary string
 	gorm.Model
+	Immobile Immobile	`gorm:"not null"`
 }
 
 type Apartment struct {
-	ID				int
-	QtdDinerRooms	int
-	Floor			int
-	PriceCondominium float32
-	HasDoorman		bool
 	gorm.Model
+	Immobile Immobile `gorm:"not null"`
+	Number	int
+	QtdDinerRooms	int
+	Floor	int
+	PriceCondominium	float32
+	HasDoorman	bool
 }
 
 
 type Neighborhood struct {
-	ID		int
-	name	string `gorm:"not null"`
+	gorm.Model
+	Name	string `gorm:"not null"`
 }
 
 type Address struct {
-	ID		int
+	gorm.Model
 	Street	string `gorm:"not null"`
 	Number	int `gorm:"not null"`
-	Neighborhood
+	Neighborhood Neighborhood
 }
 
 
 
 func main() {
 
-	dsn := "host=127.0.0.1 user=postgres password=awesomepostgres dbname=postgres port=5432 sslmode=disable TimeZone=America/Sao_Paulo"
+	dsn := "host=" + env.MustGetString("host") +
+		" user=" + env.MustGetString("user") +
+		" password=" + env.MustGetString("password") +
+		" dbname=" + env.MustGetString("dbname") +
+		" port=" + env.MustGetString("port") +
+		" sslmode=" + env.MustGetString("sslmode") +
+		" TimeZone=" + env.MustGetString("TimeZone")
+
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(env.MustGetInt("dale"))
+	firHouse := House{
+		Immobile: Immobile {
+			Price: 1100,
+			QtdBedrooms: 2,
+			HaveCloset: true,
+			Area: 82.2,
+			QtdCarspaces: 1,
+			QtdRooms: 1,
+			QtdSuites: 0,
+			Summary: "Pets allowed",
+			Address: Address {
+				Street: "Rua Zurike",
+				Number: 123,
+				Neighborhood: Neighborhood{
+					Name: "Nova Suissa",
+				},
+			},
+		},
+	}
 
 	// Migrate the schema
+	db.AutoMigrate(&House{})
+	db.AutoMigrate(&Apartment{})
 	db.AutoMigrate(&Immobile{})
+	db.AutoMigrate(&Neighborhood{})
+	db.AutoMigrate(&Address{})
 
 	// Create
-	db.Create(&Immobile{ID: 100})
-	fmt.Println("Fim!")
+	db.Create(&firHouse)
 }
