@@ -1,8 +1,7 @@
 package main
 
 import (
-	"GabrielNegreirosLima/telezap-imoveis/infra/env"
-	"gorm.io/driver/postgres"
+	pgClient "GabrielNegreirosLima/telezap-imoveis/infra/postgres"
 	"gorm.io/gorm"
 
 	"fmt"
@@ -73,15 +72,7 @@ type MyType struct {
 
 func main() {
 
-	dsn := "host=" + env.MustGetString("host") +
-		" user=" + env.MustGetString("user") +
-		" password=" + env.MustGetString("password") +
-		" dbname=" + env.MustGetString("dbname") +
-		" port=" + env.MustGetString("port") +
-		" sslmode=" + env.MustGetString("sslmode") +
-		" TimeZone=" + env.MustGetString("TimeZone")
-
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := pgClient.InitializeConnection()
 	if err != nil {
 		panic(err)
 	}
