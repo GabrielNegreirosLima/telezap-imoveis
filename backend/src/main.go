@@ -6,6 +6,7 @@ import (
 
 	"fmt"
 	"encoding/json"
+	"errors"
 	routing "github.com/jackwhelpton/fasthttp-routing/v2"
 	"github.com/valyala/fasthttp"
 	adapter "github.com/vingarcia/go-adapter"
@@ -84,8 +85,15 @@ func main() {
 	db.AutoMigrate(&Neighborhood{})
 	db.AutoMigrate(&Address{})
 
-	var firHouse House
-    firHouse = House{
+	var houses []House
+	var house House
+	var apartments []Apartment
+	//var apartment Apartment
+	//var immobile Immobile
+	//var neighborhood Neighborhood
+	//var address Address
+
+    house = House{
 		ID: 0,
 		Immobile:	Immobile {
 			Price: 1100,
@@ -106,31 +114,101 @@ func main() {
 		},
 	}
 
-	// Create
-	db.Create(&firHouse)
 
+	// Create:
+	db.Create(&house)
 
 	router := routing.New()
 
-	router.Post("/adapted/<id>", adapter.Adapt(func(ctx *routing.Context, args struct {
-		ID       uint64 `path:"id"`
-		Brand    string `header:"brand,optional"`
-		Qparam   string `query:"qparam,required"`
-		//MyType   MyType `uservalue:"my_type"`
-		JSONBody Foo
+	// Return all houses
+	router.Get("/houses", adapter.Adapt(func(ctx *routing.Context, args struct{}) error {
+		db.Find(&houses)
+		jsonResp, err := json.Marshal(houses)
+		if err != nil {
+			fmt.Println("Error at Marshal: ", err)
+			return err
+		}
+
+		fmt.Println(string(jsonResp))
+		ctx.SetBody(jsonResp)
+		return nil
+	}))
+
+
+	// Return a specific house
+	router.Get("/houses/<id>", adapter.Adapt(func(ctx *routing.Context, args struct {
+		ID	int `path:"id"`
 	}) error {
-		jsonResp, _ := json.Marshal(map[string]interface{}{
-			"ID":        args.ID,
-			"Brand":     args.Brand,
-			"Query":     args.Qparam,
-			"Body":      args.JSONBody,
-		//	"UserValue": args.MyType,
-		})
+
+		if(args.ID < 1){
+			return errors.New("This isn't a valid ID!")
+		}
+
+		db.Find(&houses)
+
+		jsonResp, err := json.Marshal(houses[args.ID-1])
+		if err != nil {
+			fmt.Println("Error at Marshal: ", err)
+			return err
+		}
+
+		fmt.Println(string(jsonResp))
+		ctx.SetBody(jsonResp)
+		return nil
+	}))
+
+
+	// Return all apartments
+	router.Get("/apartments", adapter.Adapt(func(ctx *routing.Context, args struct {}) error {
+
+		db.Find(&apartments)
+		jsonResp, err := json.Marshal(apartments)
+		if err != nil {
+			fmt.Println("Error at Marshal: ", err)
+			return err
+		}
+
+		fmt.Println(string(jsonResp))
+		ctx.SetBody(jsonResp)
+		return nil
+	}))
+
+
+	// Return a specific apartament
+	router.Get("/apartments/<id>", adapter.Adapt(func(ctx *routing.Context, args struct {
+		ID	int `path:"id"`
+	}) error {
+
+		if(args.ID < 1){
+			return errors.New("This isn't a valid ID!")
+		}
+
+		db.Find(&apartments)
+
+		jsonResp, err := json.Marshal(apartments[args.ID-1])
+		if err != nil {
+			fmt.Println("Error at Marshal: ", err)
+			return err
+		}
+
+		fmt.Println(string(jsonResp))
+		ctx.SetBody(jsonResp)
+		return nil
+	}))
+
+	router.Post("/houses/<id>", adapter.Adapt(func(ctx *routing.Context, args struct {
+		ID     int `path:"id"`
+		Body   Foo    `content-type:"application/json"`
+	}) error {
+
+		"ID":        args.ID,
+		"Body":      args.Body
 		fmt.Println(string(jsonResp))
 		ctx.SetBody(jsonResp)
 
 		return nil
 	}))
+
 
 	port := "8765"
 	// Serve Start
