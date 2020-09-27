@@ -47,7 +47,7 @@ Returns all the houses stored
 curl -i -X GET localhost:8765/houses
 ```
 
-### /houses/<id>
+### /houses/\<id\>
 
 Return the specific house with the ID provided
 
