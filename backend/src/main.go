@@ -67,10 +67,6 @@ type Foo struct {
 	Name string `json:"name"`
 }
 
-type MyType struct {
-	Value string
-}
-
 func main() {
 
 	db, err := pgClient.InitializeConnection()
@@ -196,19 +192,33 @@ func main() {
 		return nil
 	}))
 
-	router.Post("/houses/<id>", adapter.Adapt(func(ctx *routing.Context, args struct {
-		ID     int `path:"id"`
-		Body   Foo    `content-type:"application/json"`
+	router.Post("/houses", adapter.Adapt(func(ctx *routing.Context, args struct {
+		Body   House    `content-type:"application/json"`
 	}) error {
 
-		"ID":        args.ID,
-		"Body":      args.Body
-		fmt.Println(string(jsonResp))
-		ctx.SetBody(jsonResp)
+		result := db.Create(&args.Body)
+		if result.Error != nil {
+			return errors.New("Could not insert. Check your data structure.")
+		}
+
+		fmt.Println("House inserted - ID: ", house.ID)
 
 		return nil
 	}))
 
+	router.Post("/apartments", adapter.Adapt(func(ctx *routing.Context, args struct {
+		Body   Apartment    `content-type:"application/json"`
+	}) error {
+
+		result := db.Create(&args.Body)
+		if result.Error != nil {
+			return errors.New("Could not insert. Check your data structure.")
+		}
+
+		fmt.Println("Apartment inserted - ID: ", house.ID)
+
+		return nil
+	}))
 
 	port := "8765"
 	// Serve Start
