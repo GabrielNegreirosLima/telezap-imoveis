@@ -7,8 +7,20 @@ The back-end of Telezap Imóveis is built in Go. The infrastructure (env vars an
 ---
 
 - Pre-requisites:
-    - Docker
-    - Docker Compose
+    - [Docker](https://docs.docker.com/engine/install/ubuntu/) (Ubuntu)
+    - [Docker Compose](https://docs.docker.com/compose/install/)
+
+- Create the file `./backend/.env` with the following:
+
+```bash
+host=127.0.0.1
+user=postgres
+password=awesomepostgres
+dbname=postgres
+port=5432
+sslmode=disable 
+TimeZone=America/Sao_Paulo
+```
 
 - Make sure to go back to telezap-imoveis root folder: `cd ..`
 - Run the containers in background with: `docker-compose up -d`
@@ -51,7 +63,7 @@ Returns all the apartments stored
 curl -i -X GET localhost:8765/apartments
 ```
 
-### /apartments/<id>
+### /apartments/\<id\>
 
 Return the specific apartment with the ID provided
 
