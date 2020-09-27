@@ -9,7 +9,16 @@ interface TextInputProps {
   error?: string;
 }
 export const TextInput = styled.input<TextInputProps>`
-  padding: 8px;
+  padding: 12px;
+  border: 1px solid #979797;
+  border-color: ${(props) => (props.error ? "#a50000" : "#979797")};
+  border-radius: 4px;
+`;
+export const TextAreaInput = styled.textarea.attrs({
+  cols: 30,
+  rows: 10,
+})<TextInputProps>`
+  padding: 12px;
   border: 1px solid #979797;
   border-color: ${(props) => (props.error ? "#a50000" : "#979797")};
   border-radius: 4px;

@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Formik, Field } from "formik";
+import { Formik } from "formik";
 
 import Header from "../../components/Header";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
+import HouseForm from "./HouseForm";
 
 import { RegisterSchema } from "./validations";
 
@@ -14,7 +15,9 @@ import {
   ButtonContainer,
   Form,
   TitleSection,
+  Row,
 } from "./styles";
+import ApartmentForm from "./ApartmentForm";
 
 enum ImmobileType {
   house = "house",
@@ -40,45 +43,7 @@ function Register() {
             onClick={() => setImmobileType(ImmobileType.apartment)}
           />
         </ButtonContainer>
-        {immobileType === ImmobileType.house ? (
-          <Formik
-            initialValues={{
-              cep: "",
-              city: "",
-              state: "",
-            }}
-            validationSchema={RegisterSchema}
-            onSubmit={(values) => {
-              // same shape as initial values
-              console.log(values);
-            }}
-          >
-            {({ errors, touched }) => (
-              <Form>
-                <TitleSection>Onde fica seu imóvel?</TitleSection>
-
-                <Input
-                  label="CEP"
-                  name="cep"
-                  type="text"
-                  error={errors.cep || "dfsfa"}
-                />
-                <Input
-                  label="Cidade"
-                  name="city"
-                  error={touched.city ? errors.city : ""}
-                />
-                <Input
-                  label="Estado"
-                  name="state"
-                  error={touched.state ? errors.state : ""}
-                />
-
-                <button type="submit">Submit</button>
-              </Form>
-            )}
-          </Formik>
-        ) : null}
+        {immobileType === ImmobileType.house ? <HouseForm /> : <ApartmentForm />}
       </ContentContainer>
     </Container>
   );

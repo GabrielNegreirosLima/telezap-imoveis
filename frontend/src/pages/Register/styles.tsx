@@ -39,3 +39,7 @@ export const TitleSection = styled.h2`
   color: #444;
   margin-bottom: 32px;
 `;
+export const Row = styled.div`
+  display: flex;
+  flex-direction: row
+`;

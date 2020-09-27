@@ -1,4 +1,5 @@
 import React from "react";
+import { Formik, useField } from "formik";
 
 import {
   Container,
@@ -6,20 +7,36 @@ import {
   TextInput,
   ErrorMessage,
   Label,
+  TextAreaInput
 } from "./styles";
 
-interface InputProps extends React.HTMLAttributes<HTMLInputElement> {
+interface InputProps {
   error?: string;
   label?: string;
+  name: string;
+  type?: string;
+  placeholder?: string;
+  maxlength?: string;
+  textarea?: boolean;
 }
-function Input({ label, error, ...rest }: InputProps) {
+   
+   function Input({ label, textarea, ...props}: InputProps) {
+    const [field, meta] = useField(props);
   return (
     <Container>
       <Label>{label}</Label>
-      <TextInput {...rest} error={error} />
-      {error && (
+      {
+        textarea ? (
+          <TextAreaInput {...field} {...props}/>
+        ) : (
+
+          <TextInput {...field} {...props}/>
+        )
+      }
+
+      {meta.touched && meta.error && (
         <ErrorContainer>
-          <ErrorMessage>{error}</ErrorMessage>
+          <ErrorMessage>{meta.error}</ErrorMessage>
         </ErrorContainer>
       )}
     </Container>
