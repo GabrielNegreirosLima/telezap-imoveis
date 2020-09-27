@@ -192,6 +192,8 @@ func main() {
 		return nil
 	}))
 
+
+	// POST ROUTES
 	router.Post("/houses", adapter.Adapt(func(ctx *routing.Context, args struct {
 		Body   House    `content-type:"application/json"`
 	}) error {
