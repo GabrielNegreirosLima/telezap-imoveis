@@ -1,21 +1,14 @@
 import React, { useState } from "react";
-import { Formik } from "formik";
 
 import Header from "../../components/Header";
 import Button from "../../components/Button";
-import Input from "../../components/Input";
 import HouseForm from "./HouseForm";
-
-import { RegisterSchema } from "./validations";
 
 import {
   Container,
   ContentContainer,
   FormTitle,
   ButtonContainer,
-  Form,
-  TitleSection,
-  Row,
 } from "./styles";
 import ApartmentForm from "./ApartmentForm";
 
@@ -43,7 +36,11 @@ function Register() {
             onClick={() => setImmobileType(ImmobileType.apartment)}
           />
         </ButtonContainer>
-        {immobileType === ImmobileType.house ? <HouseForm /> : <ApartmentForm />}
+        {immobileType === ImmobileType.house ? (
+          <HouseForm />
+        ) : (
+          <ApartmentForm />
+        )}
       </ContentContainer>
     </Container>
   );

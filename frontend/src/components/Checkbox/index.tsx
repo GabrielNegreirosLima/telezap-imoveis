@@ -50,7 +50,7 @@ function Input({
   const [field, meta] = useField(props);
   return (
     <Container>
-      <Label htmlFor={props.name}>{label}</Label>
+      <Label>{label}</Label>
       {textarea ? (
         <TextAreaInput error={meta.error} {...field} {...props} />
       ) : select ? (

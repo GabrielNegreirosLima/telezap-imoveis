@@ -27,7 +27,7 @@ export const ButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
 `;
-export const Form = styled.form`
+export const FormWrapper = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -41,5 +41,8 @@ export const TitleSection = styled.h2`
 `;
 export const Row = styled.div`
   display: flex;
-  flex-direction: row
+  flex-direction: row;
+  flex: 1;
+  width: 100%;
+  justify-content: space-between;
 `;

@@ -1,85 +1,176 @@
-import React, { useState } from "react";
-import { Formik } from "formik";
+import React, { useState, useEffect } from "react";
+import { Formik, Form } from "formik";
+import { AxiosResponse } from "axios";
+
+import { HouseSchema } from "../validations";
+
 import Input from "../../../components/Input";
-
-import { RegisterSchema } from "../validations";
-
-import {
-  Form,
-  TitleSection,
-  Row,
-} from "../styles";
 import Button from "../../../components/Button";
+import { createHouse, fetchNeighborhoods } from "../../../api";
+import { FetchNeighborhoodResponse, House } from "../../../api/types";
 
+import { FormWrapper, TitleSection, Row } from "../styles";
+
+interface HouseFormProps {
+  price: string;
+  bedrooms: string;
+  haveCloset: boolean;
+  area: string;
+  carSpaces: string;
+  suites: string;
+  description: string;
+  address: string;
+  number: string;
+  neighborhood: string;
+  newNeighborhood: string;
+}
 function HouseForm() {
+  const [neighborhoods, setNeighborhoods] = useState(
+    [] as Array<FetchNeighborhoodResponse>
+  );
+
+  function handleSubmit(values: HouseFormProps) {
+    const price = Number(values.price.replace("R$", "").replace(",", "."));
+    const house = {
+      Immobile: {
+        Price: price,
+        QtdBedrooms: Number(values.bedrooms),
+        HaveCloset: values.haveCloset,
+        Area: Number(values.area),
+        QtdCarspaces: Number(values.carSpaces),
+        QtdRooms: 0,
+        QtdSuites: Number(values.suites),
+        Summary: values.description,
+        Address: {
+          Street: values.address,
+          Number: Number(values.number),
+        },
+      },
+    } as House;
+
+    if (values.neighborhood === "other") {
+      house.Immobile.Address.Neighborhood = {
+        Name: values.newNeighborhood,
+      };
+    } else {
+      house.Immobile.Address.NeighborhoodID = Number(values.neighborhood);
+    }
+
+    createHouse(house)
+      .then((response) => {
+        console.log(response);
+        alert("Sucesso\n\nImóvel criado com sucesso");
+      })
+      .catch((err) => alert("Ops\n\nAlgo deu errado ao tentar criar o imóvel"));
+  }
+
+  useEffect(() => {
+    fetchNeighborhoods().then(
+      (response: AxiosResponse<Array<FetchNeighborhoodResponse>>) => {
+        setNeighborhoods(response.data);
+      }
+    );
+  }, []);
   return (
     <Formik
       initialValues={{
-        cep: "",
-        city: "",
-        state: "",
         address: "",
         number: "",
         neighborhood: "",
-        decription: "",
+        newNeighborhood: "",
+        description: "",
         area: "",
-        bathrooms: "",
         bedrooms: "",
         suites: "",
+        haveCloset: false,
+        carSpaces: "",
+        price: "",
       }}
-      validationSchema={RegisterSchema}
+      enableReinitialize
+      validationSchema={HouseSchema}
       onSubmit={(values) => {
-        // same shape as initial values
-        console.log(values);
+        handleSubmit(values);
       }}
     >
-      {({ errors, touched }) => (
+      {({ errors, touched, values }) => (
         <Form>
-          <TitleSection>Onde fica seu imóvel?</TitleSection>
+          <FormWrapper>
+            <TitleSection>Onde fica seu imóvel?</TitleSection>
 
-          <Input
-            label="CEP"
-            name="cep"
-            type="number"
-            placeholder="00000-000"
-            maxlength="8"
-          />
-          <Input label="Estado" name="state" type="text" />
-          <Input label="Cidade" name="city" type="text" />
-          <Input label="Bairro" name="neighborhood" type="text" />
-          <Input label="Endereço" name="address" type="text" />
-          <Input
-            label="Número"
-            name="number"
-            type="number"
-            placeholder="Ex: 221"
-          />
+            <Input select label="Bairro" name="neighborhood" type="text">
+              <option value={undefined} selected>
+                Escolha o bairro
+              </option>
+              {neighborhoods.map((neighborhood) => (
+                <option value={neighborhood.ID}>{neighborhood.Name}</option>
+              ))}
+              <option value="other">Outro</option>
+            </Input>
+            {values.neighborhood === "other" && (
+              <Input label="Novo bairro" name="newNeighborhood" type="text" />
+            )}
+            <Input label="Endereço" name="address" type="text" />
+            <Input
+              label="Número"
+              name="number"
+              type="number"
+              placeholder="Ex: 221"
+            />
 
-          <TitleSection>Dados principais do imóvel</TitleSection>
+            <TitleSection>Dados principais do imóvel</TitleSection>
 
-          <Row>
-            <Input label="Área (m²)" name="area" type="number" placeholder="0" />
-            <Input label="Quartos" name="bedrooms" type="number" placeholder="0" />
-          </Row>
-          <Row>
-            <Input label="Banheiros" name="bathrooms" type="number" placeholder="0" />
-            <Input label="Suítes" name="suites" type="number" placeholder="0" />
-          </Row>
-          <Row>
-            <Input label="Vagas" name="carspaces" type="number" placeholder="0" />
-          </Row>
-          <Input textarea label="Descrição" name="description" type="number" />
+            <Row>
+              <Input
+                label="Área (m²)"
+                name="area"
+                type="number"
+                placeholder="0"
+              />
+              <Input
+                label="Quartos"
+                name="bedrooms"
+                type="number"
+                placeholder="0"
+              />
+            </Row>
+            <Row>
+              <Input
+                label="Suítes"
+                name="suites"
+                type="number"
+                placeholder="0"
+              />
+              <Input
+                label="Vagas"
+                name="carSpaces"
+                type="number"
+                placeholder="0"
+              />
+            </Row>
+            <Input
+              label="Possui armario embutido"
+              name="haveCloset"
+              type="checkbox"
+            />
+            <Input
+              textarea
+              label="Descrição"
+              name="description"
+              type="number"
+            />
 
-          <TitleSection>Quanto custa o imóvel?</TitleSection>
+            <TitleSection>Quanto custa o imóvel?</TitleSection>
 
-          <Input
-            label="Valor"
-            name="cep"
-            type="number"
-            placeholder=""
-          />
+            <Input
+              money
+              label="Valor"
+              name="price"
+              type="text"
+              placeholder=""
+            />
 
-          <Button title="Salvar" primary type="submit" />
+            <Button title="Salvar" primary type="submit" />
+          </FormWrapper>
         </Form>
       )}
     </Formik>

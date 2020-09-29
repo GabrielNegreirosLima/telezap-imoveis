@@ -36,7 +36,7 @@ export const ErrorMessage = styled.span`
   color: #a50000;
   font-size: 0.75rem;
 `;
-export const Label = styled.label`
+export const Label = styled.span`
   color: #6f6f6f;
   font-size: 1rem;
   margin-bottom: 8px;
