@@ -84,10 +84,7 @@ func main() {
 	var houses []House
 	var house House
 	var apartments []Apartment
-	//var apartment Apartment
-	//var immobile Immobile
-	//var neighborhood Neighborhood
-	//var address Address
+	var neighborhoods []Neighborhood
 
     house = House{
 		ID: 0,
@@ -192,6 +189,20 @@ func main() {
 		return nil
 	}))
 
+	// Return all neighborhoods
+	router.Get("/neighborhoods", adapter.Adapt(func(ctx *routing.Context, args struct {}) error {
+
+		db.Find(&neighborhoods)
+		jsonResp, err := json.Marshal(neighborhoods)
+		if err != nil {
+			fmt.Println("Error at Marshal: ", err)
+			return err
+		}
+
+		fmt.Println(string(jsonResp))
+		ctx.SetBody(jsonResp)
+		return nil
+	}))
 
 	// POST ROUTES
 	router.Post("/houses", adapter.Adapt(func(ctx *routing.Context, args struct {
