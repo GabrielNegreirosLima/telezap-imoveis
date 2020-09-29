@@ -90,31 +90,6 @@ func main() {
 	var apartments []Apartment
 	var neighborhoods []Neighborhood
 
-    house = House{
-		ID: 0,
-		Immobile:	Immobile {
-			Price: 1100,
-			QtdBedrooms: 2,
-			HaveCloset: true,
-			Area: 82.2,
-			QtdCarspaces: 1,
-			QtdRooms: 1,
-			QtdSuites: 0,
-			Summary: "Pets allowed",
-			Address: Address {
-				Street: "Rua Zurike",
-				Number: 123,
-				Neighborhood: Neighborhood{
-					Name: "Nova Suissa",
-				},
-			},
-		},
-	}
-
-
-	// Create:
-	db.Create(&house)
-
 	// Routes
 	c := cors.New(cors.Options{
 	AllowedOrigins: []string{"*"},
@@ -223,6 +198,29 @@ func main() {
 		ctx.SetBody(jsonResp)
 		return nil
 	}))
+
+	// Return a specific neighborhood
+	router.Get("/neighborhoods/<id>", adapter.Adapt(func(ctx *routing.Context, args struct {
+		ID	int `path:"id"`
+	}) error {
+
+		if(args.ID < 1){
+			return errors.New("This isn't a valid ID!")
+		}
+
+		db.Find(&neighborhoods)
+
+		jsonResp, err := json.Marshal(neighborhoods[args.ID-1])
+		if err != nil {
+			fmt.Println("Error at Marshal: ", err)
+			return err
+		}
+
+		fmt.Println(string(jsonResp))
+		ctx.SetBody(jsonResp)
+		return nil
+	}))
+
 
 	// POST ROUTES
 	router.Post("/houses", adapter.Adapt(func(ctx *routing.Context, args struct {
