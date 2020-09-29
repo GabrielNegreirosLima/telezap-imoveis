@@ -7,6 +7,9 @@ import (
 	"fmt"
 	"encoding/json"
 	"errors"
+	"github.com/rs/cors"
+	"github.com/jackwhelpton/fasthttp-routing/v2/slash"
+	"github.com/valyala/fasthttp/fasthttpadaptor"
 	routing "github.com/jackwhelpton/fasthttp-routing/v2"
 	"github.com/valyala/fasthttp"
 	adapter "github.com/vingarcia/go-adapter"
@@ -110,6 +113,23 @@ func main() {
 
 	// Create:
 	db.Create(&house)
+
+	// Routes
+	c := cors.New(cors.Options{
+	AllowedOrigins: []string{"http://localhost", "http://localhost:3000"},
+	AllowedHeaders: []string{"*"},
+	AllowedMethods: []string{
+		http.MethodGet,
+		http.MethodPost,
+	},
+	AllowCredentials: true,
+	})
+
+	router := routing.New()
+	router.Use(
+		routing.RequestHandlerFunc(fasthttpadaptor.NewFastHTTPHandlerFunc(c.HandlerFunc)),
+		slash.Remover(fasthttp.StatusMovedPermanently),
+	)
 
 	router := routing.New()
 
