@@ -92,7 +92,7 @@ func main() {
 
 	// Routes
 	c := cors.New(cors.Options{
-	AllowedOrigins: []string{"*"},
+	AllowedOrigins: []string{"http://localhost", "http://localhost:3000"},
 	AllowedHeaders: []string{"*"},
 	AllowedMethods: []string{
 		http.MethodGet,
