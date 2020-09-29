@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"encoding/json"
 	"errors"
+	"net/http"
 	"github.com/rs/cors"
 	"github.com/jackwhelpton/fasthttp-routing/v2/slash"
 	"github.com/valyala/fasthttp/fasthttpadaptor"
@@ -116,7 +117,7 @@ func main() {
 
 	// Routes
 	c := cors.New(cors.Options{
-	AllowedOrigins: []string{"http://localhost", "http://localhost:3000"},
+	AllowedOrigins: []string{"*"},
 	AllowedHeaders: []string{"*"},
 	AllowedMethods: []string{
 		http.MethodGet,
@@ -131,7 +132,6 @@ func main() {
 		slash.Remover(fasthttp.StatusMovedPermanently),
 	)
 
-	router := routing.New()
 
 	// Return all houses
 	router.Get("/houses", adapter.Adapt(func(ctx *routing.Context, args struct{}) error {
