@@ -14,10 +14,10 @@ export const Container = styled.div`
 `;
 
 export const Logo = styled.img.attrs({
-  src:
-    "https://assets.zap.com.br/assets/v5.52.4/zap.svg?b3f59ed8e7ccc42f6e8b44e5db9a746e",
+  src: process.env.PUBLIC_URL + "/assets/TeleZapLogo.png",
 })`
-  width: 100px;
+  width: 200px;
+  height: 50px;
 `;
 
 export const LogoCefet = styled.img.attrs({
