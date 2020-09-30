@@ -27,6 +27,7 @@ interface ApartmentFormProps {
   hasDoorman: boolean;
   dinnerRooms: string;
   priceCondominium: string;
+  complement: string;
 }
 function ApartmentForm() {
   const [neighborhoods, setNeighborhoods] = useState(
@@ -34,14 +35,19 @@ function ApartmentForm() {
   );
 
   function handleSubmit(values: ApartmentFormProps) {
-    const price = Number(values.price.replace("R$", "").replace(",", "."));
+    const price = Number(
+      values.price.replace("R$", "").replace(".", "").replace(",", ".")
+    );
     const priceCondominium = Number(
-      values.priceCondominium.replace("R$", "").replace(",", ".")
+      values.priceCondominium
+        .replace("R$", "")
+        .replace(".", "")
+        .replace(",", ".")
     );
     const apartment = {
       Floor: Number(values.floor),
       HasDoorman: values.hasDoorman,
-      Number: Number(values.bedrooms),
+      Number: Number(values.complement),
       PriceCondominium: priceCondominium,
       QtdDinerRooms: Number(values.dinnerRooms),
       Immobile: {
@@ -101,6 +107,7 @@ function ApartmentForm() {
         hasDoorman: false,
         dinnerRooms: "",
         priceCondominium: "",
+        complement: "",
       }}
       enableReinitialize
       validationSchema={ApartmentSchema}

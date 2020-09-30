@@ -30,7 +30,9 @@ function HouseForm() {
   );
 
   function handleSubmit(values: HouseFormProps) {
-    const price = Number(values.price.replace("R$", "").replace(",", "."));
+    const price = Number(
+      values.price.replace("R$", "").replace(".", "").replace(",", ".")
+    );
     const house = {
       Immobile: {
         Price: price,
